@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 340" role="img" aria-labelledby="title desc">
+  <title id="title">Dianas Weddings</title>
+  <desc id="desc">Zwei ineinanderliegende Ringe über der Wortmarke Dianas Weddings</desc>
+  <g fill="none" stroke="#5f4f40" stroke-width="2.8">
+    <ellipse cx="333" cy="82" rx="80" ry="78" transform="rotate(-8 333 82)" />
+    <ellipse cx="425" cy="102" rx="66" ry="64" transform="rotate(7 425 102)" />
+  </g>
+  <text
+    x="380"
+    y="257"
+    fill="#5f4f40"
+    font-family="Didot, 'Bodoni 72', 'Bodoni MT', 'Times New Roman', serif"
+    font-size="112"
+    font-weight="400"
+    letter-spacing="20"
+    text-anchor="middle"
+  >DIANAS</text>
+  <text
+    x="380"
+    y="317"
+    fill="#5f4f40"
+    font-family="'Avenir Next', Avenir, 'Helvetica Neue', Arial, sans-serif"
+    font-size="29"
+    font-weight="400"
+    letter-spacing="24"
+    text-anchor="middle"
+  >WEDDINGS</text>
+</svg>
