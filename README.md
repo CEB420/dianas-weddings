@@ -19,7 +19,7 @@ Live: https://ceb420.github.io/dianas-weddings/
 - Drei Begleitungen nebeneinander, auch auf dem Handy, „Meist gebucht“ und „Immer inklusive“
 - Einblicke-Vorschau verlinkt direkt auf die jeweilige Galerie
 - FAQ-Akkordeon mit sechs Fragen
-- Anfrageformular mit Pflichtfeld-Prüfung; „Datum steht noch nicht fest“ deaktiviert das Datumsfeld. Beim Absenden öffnet sich das E-Mail-Programm mit einer fertigen Anfrage an dianafedotov@gmail.com (GitHub Pages hat keinen Server für Formulare)
+- Anfrageformular mit Pflichtfeld-Prüfung; „Datum steht noch nicht fest“ deaktiviert das Datumsfeld. Beim Absenden gehen die Angaben an Jotform (Formular „Hochzeitsanfrage“, ID 262892332273056)
 - Schrift Cormorant Infant lokal eingebunden, keine Cookies, kein Tracking
 
 ## Lokal ansehen

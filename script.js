@@ -201,25 +201,44 @@ form.addEventListener("submit", (event) => {
   }
 
   const fields = form.elements;
-  const weddingDate = fields.dateUnknown.checked
-    ? "steht noch nicht fest"
-    : new Date(`${fields.weddingDate.value}T12:00`).toLocaleDateString("de-DE");
-  const body = [
-    `Namen: ${fields.names.value}`,
-    `E-Mail: ${fields.email.value}`,
-    `Hochzeitsdatum: ${weddingDate}`,
-    `Ort: ${fields.location.value}`,
-    `Begleitung: ${fields.package.value}`,
-    "",
-    fields.message.value,
-  ].join("\n");
-  const subject = `Hochzeitsanfrage von ${fields.names.value}`;
+  const submitButton = form.querySelector("button[type='submit']");
+  const jotformId = "262892332273056";
+  const data = new FormData();
 
-  window.location.href = `mailto:dianafedotov@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  data.append("formID", jotformId);
+  data.append("simple_spc", `${jotformId}-${jotformId}`);
+  data.append("website", "");
+  data.append("q2_q2_fullname0[first]", fields.names.value);
+  data.append("q2_q2_fullname0[last]", "");
+  data.append("q3_q3_email1", fields.email.value);
+  data.append(
+    "q12_euerHochzeitsdatum",
+    fields.dateUnknown.checked ? "" : new Date(`${fields.weddingDate.value}T12:00`).toLocaleDateString("de-DE"),
+  );
+  data.append("q13_unserDatum", fields.dateUnknown.checked ? "Ja" : "");
+  data.append("q6_q6_textbox4", fields.location.value);
+  data.append("q7_q7_dropdown5", fields.package.value);
+  data.append("q8_q8_textarea6", fields.message.value);
 
+  submitButton.disabled = true;
   formStatus.classList.remove("is-error");
-  formStatus.textContent =
-    "Euer E-Mail-Programm öffnet sich mit eurer Anfrage. Bitte sendet die E-Mail dort ab. Falls sich nichts öffnet, schreibt direkt an dianafedotov@gmail.com.";
+  formStatus.textContent = "Eure Anfrage wird gesendet …";
+
+  fetch(`https://submit.jotform.com/submit/${jotformId}`, { method: "POST", mode: "no-cors", body: data })
+    .then(() => {
+      form.reset();
+      dateInput.disabled = false;
+      dateInput.required = true;
+      formStatus.textContent = "Danke für eure Anfrage! Ich melde mich innerhalb von 48 Stunden persönlich bei euch.";
+    })
+    .catch(() => {
+      formStatus.classList.add("is-error");
+      formStatus.textContent =
+        "Die Anfrage konnte nicht gesendet werden. Bitte versucht es noch einmal oder schreibt direkt an dianafedotov@gmail.com.";
+    })
+    .finally(() => {
+      submitButton.disabled = false;
+    });
 });
 
 const initialAnchor = location.hash ? document.querySelector(location.hash) : null;
