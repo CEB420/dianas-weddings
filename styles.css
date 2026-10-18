@@ -625,7 +625,14 @@ h3 {
   min-height: 36rem;
   flex-direction: column;
   padding: 3.25rem clamp(1.5rem, 2.8vw, 3.25rem) 0;
-  border-top: 0.55rem solid var(--deep);
+  /* Nur das meist gebuchte Paket bekommt den kräftigen Balken, die anderen eine feine Linie */
+  border-top: 0.55rem solid transparent;
+  background: linear-gradient(var(--line), var(--line)) top / 100% 1px no-repeat border-box;
+}
+
+.package--featured {
+  border-top-color: var(--deep);
+  background: none;
 }
 
 .package + .package {
