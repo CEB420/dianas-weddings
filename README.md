@@ -2,7 +2,7 @@
 
 Website von **Dianas Weddings**, Hochzeitsfotografie in Leipzig (Diana Fedotov).
 
-Live: https://ceb420.github.io/dianas-weddings/
+Live: https://dianasweddings.de/
 
 ## Seiten
 
