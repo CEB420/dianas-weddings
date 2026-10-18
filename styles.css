@@ -1142,8 +1142,22 @@ h3 {
 }
 
 .lookbook-grid {
-  columns: 4;
+  --lookbook-columns: 4;
+  columns: var(--lookbook-columns);
   column-gap: clamp(0.65rem, 1vw, 1rem);
+}
+
+/* Von gallery.js zeilenweise verteilt, damit die Reihenfolge links nach rechts stimmt */
+.lookbook-grid.is-arranged {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(0.65rem, 1vw, 1rem);
+  columns: auto;
+}
+
+.lookbook-grid__column {
+  flex: 1 1 0;
+  min-width: 0;
 }
 
 .lookbook-grid figure {
@@ -1260,7 +1274,7 @@ h3 {
   }
 
   .lookbook-grid {
-    columns: 3;
+    --lookbook-columns: 3;
   }
 }
 
@@ -1521,7 +1535,7 @@ h3 {
   }
 
   .lookbook-grid {
-    columns: 2;
+    --lookbook-columns: 2;
   }
 
   :root {
@@ -2039,7 +2053,7 @@ h3 {
 
 @media (max-width: 520px) {
   .lookbook-grid {
-    columns: 2;
+    --lookbook-columns: 2;
   }
 }
 
