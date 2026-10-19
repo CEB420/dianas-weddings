@@ -55,13 +55,22 @@ function updateSliderStatus(index) {
   sliderProgress.style.width = `${((activeSlide + 1) / slides.length) * 100}%`;
 }
 
+// Mobil sind die Bilder mittig eingerastet (scroll-snap-align: center), sonst linksbündig.
+function slidePosition(slide) {
+  const start = slide.offsetLeft - sliderTrack.offsetLeft;
+  if (getComputedStyle(slide).scrollSnapAlign.includes("center")) {
+    return start - (sliderTrack.clientWidth - slide.getBoundingClientRect().width) / 2;
+  }
+  return start;
+}
+
 function showSlide(index) {
   const slideWidth = slides[0].getBoundingClientRect().width;
   const trackGap = parseFloat(getComputedStyle(sliderTrack).columnGap) || 0;
   const visibleSlides = Math.max(1, Math.floor((sliderTrack.clientWidth + trackGap) / (slideWidth + trackGap)));
   const lastStartIndex = Math.max(0, slides.length - visibleSlides);
   const nextIndex = index < 0 ? lastStartIndex : index > lastStartIndex ? 0 : index;
-  const target = slides[nextIndex].offsetLeft - sliderTrack.offsetLeft;
+  const target = slidePosition(slides[nextIndex]);
 
   updateSliderStatus(nextIndex);
   sliderTrack.scrollTo({ left: target, behavior: reducedMotion.matches ? "auto" : "smooth" });
@@ -87,9 +96,9 @@ sliderTrack.addEventListener(
     window.cancelAnimationFrame(scrollFrame);
     scrollFrame = window.requestAnimationFrame(() => {
       const nearestIndex = slides.reduce((nearest, slide, index) => {
-        const slidePosition = slide.offsetLeft - sliderTrack.offsetLeft;
-        const nearestPosition = slides[nearest].offsetLeft - sliderTrack.offsetLeft;
-        return Math.abs(slidePosition - sliderTrack.scrollLeft) < Math.abs(nearestPosition - sliderTrack.scrollLeft)
+        const position = slidePosition(slide);
+        const nearestPosition = slidePosition(slides[nearest]);
+        return Math.abs(position - sliderTrack.scrollLeft) < Math.abs(nearestPosition - sliderTrack.scrollLeft)
           ? index
           : nearest;
       }, 0);
@@ -226,10 +235,7 @@ form.addEventListener("submit", (event) => {
 
   fetch(`https://submit.jotform.com/submit/${jotformId}`, { method: "POST", mode: "no-cors", body: data })
     .then(() => {
-      form.reset();
-      dateInput.disabled = false;
-      dateInput.required = true;
-      formStatus.textContent = "Danke für eure Anfrage! Ich melde mich innerhalb von 48 Stunden persönlich bei euch.";
+      window.location.href = "danke.html";
     })
     .catch(() => {
       formStatus.classList.add("is-error");
