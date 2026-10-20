@@ -44,10 +44,45 @@ const sliderProgress = slider.querySelector("[data-slider-progress]");
 const sliderPrev = slider.querySelector("[data-slider-prev]");
 const sliderNext = slider.querySelector("[data-slider-next]");
 const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+const loopMedia = window.matchMedia("(max-width: 820px)");
 let activeSlide = 0;
 let autoplayTimer;
 let sliderVisible = true;
 let scrollFrame;
+let settleTimer;
+let touching = false;
+
+// Mobil läuft die Galerie endlos: Kopien der letzten Bilder stehen vorn, Kopien der ersten hinten.
+// So sind auch beim ersten und letzten Bild links und rechts die Nachbarn angeschnitten zu sehen.
+// Die Kopien sind per CSS nur mobil sichtbar.
+const CLONE_COUNT = 2;
+
+function cloneSlide(slide) {
+  const clone = slide.cloneNode(true);
+  clone.classList.add("portfolio-slide--clone");
+  clone.removeAttribute("data-slide");
+  clone.removeAttribute("aria-label");
+  clone.setAttribute("aria-hidden", "true");
+  return clone;
+}
+
+const headClones = slides.slice(-CLONE_COUNT).map(cloneSlide);
+const tailClones = slides.slice(0, CLONE_COUNT).map(cloneSlide);
+sliderTrack.prepend(...headClones);
+sliderTrack.append(...tailClones);
+const loopItems = [...headClones, ...slides, ...tailClones];
+
+function isLooping() {
+  return loopMedia.matches;
+}
+
+function sliderItems() {
+  return isLooping() ? loopItems : slides;
+}
+
+function realIndex(itemIndex) {
+  return isLooping() ? (itemIndex - CLONE_COUNT + slides.length) % slides.length : itemIndex;
+}
 
 function updateSliderStatus(index) {
   activeSlide = (index + slides.length) % slides.length;
@@ -64,19 +99,68 @@ function slidePosition(slide) {
   return start;
 }
 
+function nearestItemIndex() {
+  const items = sliderItems();
+  return items.reduce((nearest, item, index) => {
+    const distance = Math.abs(slidePosition(item) - sliderTrack.scrollLeft);
+    const nearestDistance = Math.abs(slidePosition(items[nearest]) - sliderTrack.scrollLeft);
+    return distance < nearestDistance ? index : nearest;
+  }, 0);
+}
+
+// Springt ohne Animation zum echten Bild (z. B. von der Kopie des ersten Bildes zum ersten Bild).
+function jumpToSlide(index) {
+  sliderTrack.scrollTo({ left: slidePosition(slides[index]), behavior: "instant" });
+}
+
 function showSlide(index) {
+  const behavior = reducedMotion.matches ? "auto" : "smooth";
+
+  if (isLooping()) {
+    // -1 und slides.length zeigen auf die Kopien am Rand, danach wird unsichtbar zurückgesprungen.
+    const loopIndex = Math.max(-1, Math.min(slides.length, index));
+    updateSliderStatus(loopIndex);
+    sliderTrack.scrollTo({ left: slidePosition(loopItems[loopIndex + CLONE_COUNT]), behavior });
+    return;
+  }
+
   const slideWidth = slides[0].getBoundingClientRect().width;
   const trackGap = parseFloat(getComputedStyle(sliderTrack).columnGap) || 0;
   const visibleSlides = Math.max(1, Math.floor((sliderTrack.clientWidth + trackGap) / (slideWidth + trackGap)));
   const lastStartIndex = Math.max(0, slides.length - visibleSlides);
   const nextIndex = index < 0 ? lastStartIndex : index > lastStartIndex ? 0 : index;
-  const target = slidePosition(slides[nextIndex]);
 
   updateSliderStatus(nextIndex);
-  sliderTrack.scrollTo({ left: target, behavior: reducedMotion.matches ? "auto" : "smooth" });
+  sliderTrack.scrollTo({ left: slidePosition(slides[nextIndex]), behavior });
+}
+
+function settleLoop() {
+  window.clearTimeout(settleTimer);
+  if (!isLooping()) return;
+  settleTimer = window.setTimeout(() => {
+    if (touching) return;
+    const nearest = nearestItemIndex();
+    if (loopItems[nearest].classList.contains("portfolio-slide--clone")) jumpToSlide(realIndex(nearest));
+  }, 150);
+}
+
+function alignSlider() {
+  if (isLooping()) jumpToSlide(activeSlide);
+  else showSlide(activeSlide);
 }
 
 updateSliderStatus(0);
+requestAnimationFrame(() => {
+  if (isLooping()) jumpToSlide(0);
+});
+loopMedia.addEventListener("change", alignSlider);
+// Nur bei echter Breitenänderung neu ausrichten (die Adressleiste am Handy ändert nur die Höhe).
+let trackWidth = sliderTrack.clientWidth;
+window.addEventListener("resize", () => {
+  if (sliderTrack.clientWidth === trackWidth) return;
+  trackWidth = sliderTrack.clientWidth;
+  if (isLooping()) jumpToSlide(activeSlide);
+});
 
 function stopAutoplay() {
   window.clearInterval(autoplayTimer);
@@ -94,18 +178,22 @@ sliderTrack.addEventListener(
   "scroll",
   () => {
     window.cancelAnimationFrame(scrollFrame);
-    scrollFrame = window.requestAnimationFrame(() => {
-      const nearestIndex = slides.reduce((nearest, slide, index) => {
-        const position = slidePosition(slide);
-        const nearestPosition = slidePosition(slides[nearest]);
-        return Math.abs(position - sliderTrack.scrollLeft) < Math.abs(nearestPosition - sliderTrack.scrollLeft)
-          ? index
-          : nearest;
-      }, 0);
-      updateSliderStatus(nearestIndex);
-    });
+    scrollFrame = window.requestAnimationFrame(() => updateSliderStatus(realIndex(nearestItemIndex())));
+    settleLoop();
   },
   { passive: true },
+);
+
+sliderTrack.addEventListener("touchstart", () => (touching = true), { passive: true });
+["touchend", "touchcancel"].forEach((type) =>
+  sliderTrack.addEventListener(
+    type,
+    () => {
+      touching = false;
+      settleLoop();
+    },
+    { passive: true },
+  ),
 );
 
 sliderTrack.addEventListener("pointerdown", stopAutoplay);
