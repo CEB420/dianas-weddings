@@ -2441,3 +2441,8 @@ h3 {
     font-size: 0.85rem;
   }
 }
+
+/* FAQ: Abstand, wenn eine Antwort mehrere Absätze hat */
+.accordion__panel p + p {
+  margin-top: 0.75rem;
+}
