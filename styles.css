@@ -1084,6 +1084,40 @@ h3 {
   transition: filter 250ms ease, transform 400ms ease;
 }
 
+.reportage-teaser__media {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+
+/* Zeigt (auch am Handy), dass man das Bild antippen kann */
+.reportage-teaser__more {
+  position: absolute;
+  right: 0.75rem;
+  bottom: 0.75rem;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--ink, #2b2b2b);
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+  transition: background 200ms ease, transform 200ms ease;
+}
+
+.reportage-teaser:hover .reportage-teaser__more {
+  background: #fff;
+  transform: translateX(2px);
+}
+
+.lookbook__subline {
+  margin: 0.9rem 0 0;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.3vw, 1.2rem);
+  letter-spacing: 0.04em;
+}
+
 .reportage-teaser:hover img {
   filter: brightness(0.96);
   transform: scale(0.995);
@@ -1154,22 +1188,32 @@ h3 {
   column-gap: clamp(0.65rem, 1vw, 1rem);
 }
 
-/* Von gallery.js zeilenweise verteilt, damit die Reihenfolge links nach rechts stimmt */
+/* Von gallery.js in Zeilen verteilt: links nach rechts, jede Zeile füllt die volle Breite */
 .lookbook-grid.is-arranged {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   gap: clamp(0.65rem, 1vw, 1rem);
   columns: auto;
 }
 
-.lookbook-grid__column {
+.lookbook-row {
+  display: flex;
+  gap: clamp(0.65rem, 1vw, 1rem);
+}
+
+.lookbook-row figure {
   flex: 1 1 0;
   min-width: 0;
+  margin: 0;
 }
 
 .lookbook-grid figure {
   margin: 0 0 clamp(0.65rem, 1vw, 1rem);
   break-inside: avoid;
+}
+
+.lookbook-grid.is-arranged figure {
+  margin: 0;
 }
 
 .lookbook-grid img {
@@ -1892,6 +1936,19 @@ h3 {
   .reportage-teaser small {
     margin-top: 0.4rem;
     font-size: 0.65rem;
+  }
+
+  .reportage-teaser__more,
+  .reportage-teaser:hover .reportage-teaser__more {
+    right: 0;
+    left: 0;
+    bottom: 0.4rem;
+    width: max-content;
+    margin-inline: auto;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.6rem;
+    white-space: nowrap;
+    transform: none;
   }
 
   .faq {
