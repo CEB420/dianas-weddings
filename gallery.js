@@ -21,13 +21,10 @@ const galleries = {
       { file: "standesamt-16.jpg", width: 339, height: 508 },
       { file: "standesamt-17.jpg", width: 339, height: 508 },
       { file: "standesamt-18.jpg", width: 339, height: 508 },
-      { file: "standesamt-19.jpg", width: 508, height: 339 },
+      { file: "standesamt-19.jpg", width: 339, height: 508 },
       { file: "standesamt-20.jpg", width: 339, height: 508 },
-      { file: "standesamt-21.jpg", width: 339, height: 508 },
       { file: "standesamt-22.jpg", width: 508, height: 339 },
       { file: "standesamt-23.jpg", width: 339, height: 508 },
-      { file: "standesamt-24.jpg", width: 339, height: 508 },
-      { file: "standesamt-25.jpg", width: 339, height: 508 },
       { file: "standesamt-26.jpg", width: 339, height: 508 },
     ],
   },
@@ -171,28 +168,49 @@ Object.entries(galleries).forEach(([key, gallery]) => {
       return figure;
     });
 
-  // Jedes Bild kommt in die gerade kürzeste Spalte, so bleibt die Reihenfolge zeilenweise lesbar.
+  // Zeilen von links nach rechts in Dianas Reihenfolge. Alle Bilder einer Zeile sind gleich hoch
+  // und füllen die ganze Breite, dadurch endet jede Zeile (und die Galerie unten) bündig.
+  // Die Aufteilung in Zeilen wird so gewählt, dass jede Zeile möglichst nah an
+  // "--lookbook-columns" Hochformat-Bildern liegt.
+  const ratios = gallery.images.map((source) => source.width / source.height);
   let arrangedColumns = 0;
   const arrange = () => {
     const columnCount = parseInt(getComputedStyle(grid).getPropertyValue("--lookbook-columns"), 10) || 4;
     if (columnCount === arrangedColumns) return;
     arrangedColumns = columnCount;
 
-    const columns = Array.from({ length: columnCount }, () => {
-      const column = document.createElement("div");
-      column.className = "lookbook-grid__column";
-      return column;
-    });
-    const heights = new Array(columnCount).fill(0);
+    const target = columnCount * (2 / 3);
+    const n = ratios.length;
+    const best = new Array(n + 1).fill(Infinity);
+    const from = new Array(n + 1).fill(0);
+    best[0] = 0;
+    for (let end = 1; end <= n; end += 1) {
+      let sum = 0;
+      for (let start = end - 1; start >= 0; start -= 1) {
+        sum += ratios[start];
+        if (sum > target * 2.2) break;
+        const cost = best[start] + (target / sum - 1) ** 2;
+        if (cost < best[end]) {
+          best[end] = cost;
+          from[end] = start;
+        }
+      }
+    }
 
-    figures.forEach((figure, index) => {
-      const source = gallery.images[index];
-      const shortest = heights.indexOf(Math.min(...heights));
-      columns[shortest].append(figure);
-      heights[shortest] += source.height / source.width;
-    });
+    const rows = [];
+    for (let end = n; end > 0; end = from[end]) rows.unshift([from[end], end]);
 
-    grid.replaceChildren(...columns);
+    grid.replaceChildren(
+      ...rows.map(([start, end]) => {
+        const row = document.createElement("div");
+        row.className = "lookbook-row";
+        for (let index = start; index < end; index += 1) {
+          figures[index].style.flexGrow = ratios[index];
+          row.append(figures[index]);
+        }
+        return row;
+      }),
+    );
     grid.classList.add("is-arranged");
   };
 
