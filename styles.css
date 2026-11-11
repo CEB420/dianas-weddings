@@ -2534,3 +2534,11 @@ h3 {
     color: var(--deep);
   }
 }
+
+@media (max-width: 520px) {
+  .lookbook__subline {
+    font-size: clamp(0.7rem, 3.7vw, 1rem);
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+}
