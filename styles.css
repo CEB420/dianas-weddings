@@ -1,6 +1,7 @@
 @font-face {
   font-family: "Cormorant Infant";
-  src: url("fonts/CormorantInfant-Regular.ttf") format("truetype");
+  src: url("fonts/CormorantInfant-Regular.woff2") format("woff2"),
+    url("fonts/CormorantInfant-Regular.ttf") format("truetype");
   font-weight: 300 400;
   font-style: normal;
   font-display: swap;
@@ -8,7 +9,8 @@
 
 @font-face {
   font-family: "Cormorant Infant";
-  src: url("fonts/CormorantInfant-Medium.ttf") format("truetype");
+  src: url("fonts/CormorantInfant-Medium.woff2") format("woff2"),
+    url("fonts/CormorantInfant-Medium.ttf") format("truetype");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -16,7 +18,8 @@
 
 @font-face {
   font-family: "Cormorant Infant";
-  src: url("fonts/CormorantInfant-SemiBold.ttf") format("truetype");
+  src: url("fonts/CormorantInfant-SemiBold.woff2") format("woff2"),
+    url("fonts/CormorantInfant-SemiBold.ttf") format("truetype");
   font-weight: 600 700;
   font-style: normal;
   font-display: swap;
@@ -24,7 +27,8 @@
 
 @font-face {
   font-family: "Cormorant Infant";
-  src: url("fonts/CormorantInfant-Italic.ttf") format("truetype");
+  src: url("fonts/CormorantInfant-Italic.woff2") format("woff2"),
+    url("fonts/CormorantInfant-Italic.ttf") format("truetype");
   font-weight: 400;
   font-style: italic;
   font-display: swap;
