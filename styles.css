@@ -2760,3 +2760,19 @@ h3 {
     padding: 1.15rem 0;
   }
 }
+
+/* Kundenstimmen: kurze Überschrift über jeder Stimme */
+.testimonial__copy > p.testimonial__headline {
+  margin-bottom: 1rem;
+  color: var(--deep);
+  font-size: clamp(1.6rem, 2.3vw, 2.4rem);
+  font-style: normal;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+@media (max-width: 820px) {
+  .testimonial__copy > p.testimonial__headline {
+    font-size: 1.55rem;
+  }
+}
