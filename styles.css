@@ -2640,3 +2640,16 @@ h3 {
 .packages__availability a:hover {
   text-decoration-thickness: 2px;
 }
+
+/* Anfrage: kleiner WhatsApp-Hinweis unter dem Formular */
+.form-whatsapp {
+  margin: 1.25rem 0 0;
+  color: var(--ink);
+  font-size: 1rem;
+}
+
+.form-whatsapp a {
+  color: var(--deep);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
