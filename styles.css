@@ -2561,3 +2561,9 @@ h3 {
     white-space: nowrap;
   }
 }
+
+.accordion__note {
+  font-size: 0.85em;
+  line-height: 1.6;
+  opacity: 0.8;
+}
