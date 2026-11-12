@@ -313,7 +313,7 @@ form.addEventListener("submit", (event) => {
     fields.dateUnknown.checked ? "" : new Date(`${fields.weddingDate.value}T12:00`).toLocaleDateString("de-DE"),
   );
   data.append("q13_unserDatum", fields.dateUnknown.checked ? "Ja" : "");
-  data.append("q6_q6_textbox4", fields.location.value);
+  data.append("q6_q6_textbox4", fields.location.value.trim() || "noch offen");
   data.append("q7_q7_dropdown5", fields.package.value);
   data.append("q8_q8_textarea6", fields.message.value);
 
