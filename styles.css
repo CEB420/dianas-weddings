@@ -2620,3 +2620,23 @@ h3 {
     margin-top: 1rem;
   }
 }
+
+/* Preise: Hinweis zu freien Terminen */
+.packages__availability {
+  margin: clamp(1.75rem, 2.5vw, 2.5rem) auto 0;
+  color: var(--deep);
+  font-size: clamp(1.1rem, 1.3vw, 1.3rem);
+  line-height: 1.45;
+  text-align: center;
+}
+
+.packages__availability a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+
+.packages__availability a:hover {
+  text-decoration-thickness: 2px;
+}
