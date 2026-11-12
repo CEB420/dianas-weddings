@@ -2776,3 +2776,87 @@ h3 {
     font-size: 1.55rem;
   }
 }
+
+/* ===== Sanfte Bewegung (motion.js) ===== */
+
+/* 1. Einblenden beim Scrollen */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition:
+    opacity 1s cubic-bezier(0.22, 0.61, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 1s cubic-bezier(0.22, 0.61, 0.36, 1) var(--reveal-delay, 0ms);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* 2. Tiefeneffekt bei Fotos */
+.parallax {
+  overflow: hidden;
+}
+
+.parallax .site-image {
+  transform: translateY(var(--parallax, 0%)) scale(1.12);
+  will-change: transform;
+}
+
+/* 3. Fotos bei "Einblicke" zoomen sanft beim Drüberfahren */
+.reportage-teaser__media img {
+  transition: transform 1.2s cubic-bezier(0.22, 0.61, 0.36, 1), filter 0.6s ease;
+}
+
+.reportage-teaser:hover img {
+  transform: scale(1.06);
+}
+
+/* 4. Kundenstimmen blenden weich über */
+.testimonial.is-active {
+  animation: testimonial-fade 0.9s ease both;
+}
+
+@keyframes testimonial-fade {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 5. Sterne nacheinander */
+.stars-animate .star {
+  display: inline-block;
+  opacity: 0.15;
+  transform: scale(0.6);
+}
+
+.stars-animate.is-visible .star {
+  animation: star-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) var(--star-delay, 0ms) forwards;
+}
+
+@keyframes star-pop {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .parallax .site-image,
+  .stars-animate .star {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    animation: none;
+  }
+
+  .testimonial.is-active {
+    animation: none;
+  }
+}
