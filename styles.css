@@ -2567,3 +2567,56 @@ h3 {
   line-height: 1.6;
   opacity: 0.8;
 }
+
+/* Startseite: kurzer Satz, Anfrage-Knopf und Google-Sterne unter der Galerie */
+.portfolio-intro__row h1 {
+  max-width: none;
+  font-size: clamp(2.4rem, 4.6vw, 4.8rem);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.portfolio-intro__lead {
+  margin: 0.9rem auto 0;
+  white-space: nowrap;
+  color: var(--muted);
+  font-size: clamp(1.15rem, 1.4vw, 1.4rem);
+  line-height: 1.4;
+}
+
+.portfolio-intro__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem 1.75rem;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.portfolio-intro__rating {
+  display: inline-flex;
+  gap: 0.6rem;
+  align-items: center;
+  color: var(--ink);
+  font-size: 0.95rem;
+  text-decoration: none;
+}
+
+.portfolio-intro__rating:hover span:last-child {
+  text-decoration: underline;
+}
+
+@media (max-width: 520px) {
+  .portfolio-intro__row h1 {
+    font-size: min(2.05rem, 7.3vw);
+    letter-spacing: 0.03em;
+  }
+
+  .portfolio-intro__lead {
+    font-size: 3.85vw;
+  }
+
+  .portfolio-intro__actions {
+    margin-top: 1rem;
+  }
+}
