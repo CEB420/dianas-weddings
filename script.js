@@ -343,3 +343,90 @@ if (initialAnchor) {
     requestAnimationFrame(() => document.documentElement.style.removeProperty("scroll-behavior"));
   });
 }
+
+// Diana: zweites Foto wird nach 2 Sekunden zum Standbild des Vorstellungsvideos
+(() => {
+  const spot = document.querySelector("[data-intro-video]");
+  const dialog = document.querySelector("[data-video-dialog]");
+  if (!spot || !dialog) return;
+
+  const media = spot.querySelector(".about__media");
+  const play = spot.querySelector(".about__play");
+  const bigVideo = dialog.querySelector("video");
+  const questions = [...dialog.querySelectorAll("button[data-time]")];
+  const src = "Samples/web/diana-vorstellung.mp4";
+
+  // Nach 2 Sekunden im Bild langsam zum Standbild wechseln
+  const observer = new IntersectionObserver(
+    (entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      observer.disconnect();
+      setTimeout(() => spot.classList.add("is-still"), 2000);
+    },
+    { threshold: 0.5 }
+  );
+  observer.observe(spot);
+
+  // Varianten 1 und 2 spielen im Bild, 3 und 4 öffnen groß. Auf kleinen Bildschirmen immer groß.
+  const playsInPlace = () =>
+    ["1", "2"].includes(spot.dataset.variant) && !window.matchMedia("(max-width: 820px)").matches;
+
+  const startInPlace = () => {
+    const video = document.createElement("video");
+    video.src = src;
+    video.controls = true;
+    video.playsInline = true;
+    video.poster = "Samples/web/diana-vorstellung-bild.jpg";
+    const from = media.offsetHeight;
+    media.style.height = `${from}px`;
+    media.appendChild(video);
+    requestAnimationFrame(() => {
+      media.style.height = `${(media.offsetWidth * 16) / 9}px`;
+    });
+    play.hidden = true;
+    video.play().catch(() => {});
+    video.addEventListener("ended", () => {
+      video.remove();
+      media.style.height = "";
+      play.hidden = false;
+    });
+  };
+
+  const markActive = () => {
+    let active = null;
+    questions.forEach((b) => {
+      if (bigVideo.currentTime >= Number(b.dataset.time) - 0.2) active = b;
+    });
+    questions.forEach((b) => b.classList.toggle("is-active", b === active));
+  };
+
+  const playBigAt = (time) => {
+    const go = () => {
+      bigVideo.currentTime = time;
+      bigVideo.play().catch(() => {});
+    };
+    if (bigVideo.readyState >= 1) go();
+    else {
+      bigVideo.preload = "auto";
+      bigVideo.addEventListener("loadedmetadata", go, { once: true });
+      bigVideo.load();
+    }
+  };
+
+  play.addEventListener("click", () => {
+    if (playsInPlace()) {
+      startInPlace();
+      return;
+    }
+    dialog.showModal();
+    playBigAt(0);
+  });
+
+  questions.forEach((b) => b.addEventListener("click", () => playBigAt(Number(b.dataset.time))));
+  bigVideo.addEventListener("timeupdate", markActive);
+  dialog.querySelector(".video-dialog__close").addEventListener("click", () => dialog.close());
+  dialog.addEventListener("click", (e) => {
+    if (e.target === dialog) dialog.close();
+  });
+  dialog.addEventListener("close", () => bigVideo.pause());
+})();
